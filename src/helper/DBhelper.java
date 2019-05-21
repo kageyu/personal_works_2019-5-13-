@@ -22,10 +22,11 @@ public class DBhelper {
 	}
 
 	//DB接続をテストするためmainメソッドを仮作成した
+	//現在は不要のため削除対象
 	public static void main(String[] args) {
 
     	String databasename = "battlearena";
-    	String user = "battlearena";
+    	String user = "battlearenauser";
     	String password = "12345";
     	String url = "jdbc:mysql://localhost:3306/" + databasename + "?serverTimezone=JST";
     	Connection con = null;
@@ -85,7 +86,7 @@ public class DBhelper {
 	 */
 	public static void openDB() {
 		String databasename = "battlearena";
-		String user = "battlearena";
+		String user = "battlearenauser";
 		String DBpassword = "12345";
 		String url = "jdbc:mysql://localhost:3306/" + databasename	+ "?serverTimezone=JST";
 
@@ -97,14 +98,7 @@ public class DBhelper {
 
     	} catch ( SQLException e ) {
     		System.out.println( "Connection Faild. :" + e.toString() );
-    	} finally {
-    		try {
-    			if(con!=null) {
-    				con.close();
-    			}
-    		}catch ( Exception e ) {
-    			System.out.println( "Exception! :" + e.toString());
-    		}
+
     	}
 	}
 
@@ -131,39 +125,59 @@ public class DBhelper {
 	}
 
 
+
+
+
+	/**
+	 * ユーザーDBをアドレスで検索し、ヒットしたパスワードを返すメソッド
+	 * @param mail 検索するメールアドレス
+	 * @return 検索結果のパスワード
+	 */
+	public static String returnPassword ( String mail ) {
+
+		String pass = "";
+
+		try {
+    		String sqlStr = "SELECT password FROM user WHERE mailaddress = '" + mail + "'" ;
+    		result = st.executeQuery( sqlStr );
+    		System.out.println( "データベース接続成功！" );
+
+    		while(result.next()) {
+    			pass = result.getString( "password" );
+    			System.out.println( pass );
+    		}
+
+		}catch ( SQLException e) {
+    		System.out.println( "Connection Faild. :" + e.toString() );
+		}
+
+		return pass;
+	}
+
+
+
+
+
 	/**
 	 * ログインメールアドレスとパスワードがデータベースに存在するか調べるメソッド
+	 * 現在は不要のため削除対象
 	 * @param mailaddress ユーザーが入力したアドレス
 	 * @param password ユーザーが入力したパスワード
 	 * @return ログイン情報がデータベース上のユーザー情報と一致した場合はtrue、それ他の場合はfalse
 	 */
- 	public boolean AuthDB(String mailaddress, String password) {
+ 	public static boolean AuthDB(String mailaddress, String password) {
 
     	String databasename = "battlearena";
-    	String user = "battlearena";
+    	String user = "battlearenauser";
     	String DBpassword = "12345";
     	String url = "jdbc:mysql://localhost:3306/" + databasename	+ "?serverTimezone=JST";
 
     	int AuthFrag = 0;
 
-    	System.out.println("DB処理開始前です！");
+    	System.out.println("DBへの接続を開始します。");
 
     	//DB開始処理
     	try {
-//    		Class.forName("con.mysql.jdbc.Driver");
-
-    		System.out.println("ClassFound!!");
-
-//    		try {
-//    			con = DriverManager.getConnection(url,user,DBpassword);
-//    			con.close();
-//    		}catch( SQLException e ){
-//
-//        		System.out.println( "1回目のDBアクセスに失敗しました。2回目を実施します。" );
-//    			con.close();
-//    		}
-//    		System.out.println("2回目のDBアクセスを実施します。");
-
     		con = DriverManager.getConnection(url,user,DBpassword);
     		System.out.println( "Connected...." ) ;
 
@@ -206,19 +220,15 @@ public class DBhelper {
 
     	} catch ( SQLException e ) {
     		System.out.println( "Connection Faild. :" + e.toString() );
-    		//throw new Exception();
 
-//    	} catch (ClassNotFoundException e) {
-//    		System.out.println("ドライバを読み込めませんでした" + e);
 
     	} finally {
     		try {
-    			if(con!=null) {
+    			if( con != null ) {
     				con.close();
     			}
     		}catch ( Exception e ) {
     			System.out.println( "Exception2! :" + e.toString());
-    			//throw new Exception();
     		}
     	}
 

@@ -61,8 +61,6 @@ public class Insert extends HttpServlet {
 		helper.insertDB(mail, password);
 
 
-
-
 		//新規登録に成功した場合はマイページへ遷移
 		//それ以外は新規登録ページへ再遷移
 		//できれば再遷移したことがわかるフラグとエラーメッセージを実装したい。

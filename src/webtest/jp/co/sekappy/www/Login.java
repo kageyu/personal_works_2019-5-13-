@@ -59,27 +59,39 @@ public class Login extends HttpServlet {
     		}
     	}
 
-    	String m = request.getParameter("mail");
-    	String p = request.getParameter("password");
+//    	String m = request.getParameter("mail");
+//    	String p = request.getParameter("password");
+//
+//    	session.setAttribute( "mail", m );
+//    	session.setAttribute( "password", p );
 
-    	session.setAttribute( "mail", m );
-    	session.setAttribute( "password", p );
-
-		DBhelper helper = new DBhelper();
+		new DBhelper();
 		String mail     = session.getAttribute("mail").toString();
 		String password = session.getAttribute("password").toString();
 
 		//AuthDBメソッドの1回目でエラーが出るため、2回実行する（原因特定に至らず暫定処置）
-		helper.AuthDB(mail, password);
-		boolean AuthResult = helper.AuthDB( mail, password );
-//		AuthResult = helper.AuthDB( mail, password );
-				//(m,p);
+		DBhelper.AuthDB(mail, password);
+//		boolean AuthResult = helper.AuthDB( mail, password );
 
-		if(AuthResult) {
+//		DBhelper.openDB();
+//		DBhelper.closeDB();
+
+		DBhelper.openDB();
+		String returnedPass = DBhelper.returnPassword( mail );
+		DBhelper.closeDB();
+
+		if(returnedPass.equals( password ) ) {
 			path = "/WEB-INF/BattleArena/Mypage.jsp";
 		}else {
-			path = "/WEB-INF/BattleArena/Login.jsp";
+			path = "/WEB-INF/BattleArena/Insert.jsp";
 		}
+
+
+//		if(AuthResult) {
+//			path = "/WEB-INF/BattleArena/Mypage.jsp";
+//		}else {
+//			path = "/WEB-INF/BattleArena/Insert.jsp";
+//		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request,response);
